@@ -1,26 +1,195 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Surfaces */
+  --color-void: #04050a;
+  --color-base: #070910;
+  --color-surface: #0b0e16;
+  --color-raised: #10141d;
+
+  /* Structure */
+  --color-line: rgba(255, 255, 255, 0.07);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
+
+  /* Type */
+  --color-ink: #e8ebf2;
+  --color-ink-dim: #98a1b2;
+  --color-ink-faint: #5d6675;
+
+  /* Algorithm state language */
+  --color-active: #38bdf8;
+  --color-compare: #fbbf24;
+  --color-swap: #fb7185;
+  --color-done: #34d399;
+  --color-pivot: #a78bfa;
+  --color-open: #22d3ee;
+  --color-closed: #6172c9;
+  --color-path: #34d399;
+  --color-wall: #1a2030;
+  --color-danger: #f87171;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  --animate-boot-line: boot-line 0.4s ease-out both;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes boot-line {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-void);
+    color-scheme: dark;
+  }
+
+  body {
+    background:
+      radial-gradient(
+        ellipse 120% 80% at 50% -10%,
+        rgba(56, 189, 248, 0.05),
+        transparent 60%
+      ),
+      var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overscroll-behavior: none;
+  }
+
+  /* The laboratory is a fixed-viewport tool, not a scrolling document. */
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: rgba(56, 189, 248, 0.28);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-active);
+    outline-offset: 1px;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: var(--color-line-strong);
+    border-radius: 2px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--color-ink);
+    border: 2px solid var(--color-base);
+    box-shadow: 0 0 0 1px var(--color-line-strong);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  input[type="range"]:hover::-webkit-slider-thumb {
+    background: var(--color-active);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 99px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
+}
+
+@layer components {
+  /* Translucent floating panel — the core surface of the laboratory. */
+  .panel {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.014)
+    );
+    border: 1px solid var(--color-line);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .grid-paper {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
